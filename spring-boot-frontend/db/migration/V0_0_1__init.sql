@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS `products`;
+CREATE TABLE `products` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `description` VARCHAR(255) NOT NULL,
+  `images` VARCHAR(255) NOT NULL,
+  `enabled` TINYINT(1) NOT NULL DEFAULT '1',
+  `price` DOUBLE NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    

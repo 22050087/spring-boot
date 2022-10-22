@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.4</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>sg.org.scc</groupId>
+	<artifactId>catalogue-service</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>spring-boot-catalogue-service</name>
+	<description>Demo catalogue-service backend for Spring Boot</description>
+	<properties>
+		<java.version>17</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <!-- JaCoCo properties -->
+		<!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
+		<jacoco.groupId>org.jacoco</jacoco.groupId>
+		<jacoco.artifactId>jacoco-maven-plugin</jacoco.artifactId>
+		<jacoco.version>0.8.8</jacoco.version>
+		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+		<!-- SonarQube properties -->
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+		<sonar.language>java</sonar.language>
+		<!-- junit jupiter properties -->
+		<junit-jupiter.groupId>org.junit.jupiter</junit-jupiter.groupId>
+		<junit-jupiter.artifactId>junit-jupiter</junit-jupiter.artifactId>
+		<junit-jupiter.version>5.7.0</junit-jupiter.version>
+	</properties>
+	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+
+	<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- mysql connector -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter -->
+		<dependency> 
+			<groupId>${junit-jupiter.groupId}</groupId>
+			<artifactId>${junit-jupiter.artifactId}</artifactId>
+			<version>${junit-jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>${jacoco.version}</version>
+		</dependency>
+		
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+      	<groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+  
+    	<plugin>
+      	<!-- SonarSource provides a maven plugin to help scan and analyze our code, including coverage. 
+			Note: This plugin requires JDK11. -->
+      	<groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+        <executions>
+        	<!-- Prepares the property pointing to the JaCoCo runtime agent -->
+        	<execution>
+        		<!-- 1 -->
+        		<id>jacoco-prepare-agent</id>
+        		<goals>
+        			<goal>prepare-agent</goal>
+        		</goals>
+        		<configuration>
+							<destFile>${sonar.jacoco.reportPath}/jacoco.exec</destFile>
+							<propertyName>surefireArgLine</propertyName>
+						</configuration>
+        	</execution>
+        	<!-- Ensures that the code coverage report for unit tests is created
+          			 after unit tests have been run. -->
+        	<execution>
+        		<!-- 2 -->
+        		<!-- report — As mentioned above this phase generates the report in XML and HTML formats. 
+					This phase requires the jacoco.exec file which was generated in the prepare-agent phase. 
+					There are various optional parameters that can be provided in this phase which can be found here.
+					-->
+        		<id>jacoco-report</id>
+        		<phase>test</phase>
+        		<goals>
+        			<goal>report</goal><!-- Generate coverage files and reports -->
+        		</goals>
+        		<configuration>
+              <dataFile>${sonar.jacoco.reportPath}/jacoco.exec</dataFile>
+            </configuration>
+        	</execution>
+        	<execution>
+        		<!-- 3 -->
+        		<!-- check — This is another goal that is optional. It can be used to 
+					fail maven builds in case some provided rules fail. 
+					-->
+        		<id>jacoco-check</id>
+        		<goals>
+        			<goal>check</goal>
+        		</goals>
+        		<configuration>
+				        <rules>
+				            <rule>
+				                <element>PACKAGE</element>
+				                <limits>
+				                    <limit>
+				                        <counter>LINE</counter>
+				                        <value>COVEREDRATIO</value>
+				                        <minimum>0.80</minimum>
+				                    </limit>
+				                </limits>
+				            </rule>
+				        </rules>
+				    </configuration>
+        	</execution>
+        </executions>
+      </plugin>
+      
+      <plugin>
+    		<groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
+        <configuration>
+					<argLine>${surefireArgLine}</argLine> 
+				</configuration>
+      </plugin>
+      
+      <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+      </plugin>
+      <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-install-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+      </plugin>
+      <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
+      <plugin>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.7.1</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>3.0.0</version>
+      </plugin>
+		</plugins>
+	</build>
+
+</project>
